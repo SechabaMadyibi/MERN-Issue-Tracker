@@ -30,6 +30,8 @@ var issues = [{
   due: new Date('2018-08-30'),
   title: 'Missing bottom border on panel'
 }];
+
+//issue filter comp
 var IssueFilter = /*#__PURE__*/function (_React$Component) {
   _inherits(IssueFilter, _React$Component);
   var _super = _createSuper(IssueFilter);
@@ -44,7 +46,7 @@ var IssueFilter = /*#__PURE__*/function (_React$Component) {
     }
   }]);
   return IssueFilter;
-}(React.Component);
+}(React.Component); //issue table comp
 var IssueTable = /*#__PURE__*/function (_React$Component2) {
   _inherits(IssueTable, _React$Component2);
   var _super2 = _createSuper(IssueTable);
@@ -67,7 +69,7 @@ var IssueTable = /*#__PURE__*/function (_React$Component2) {
     }
   }]);
   return IssueTable;
-}(React.Component);
+}(React.Component); //border wrap cpmponent
 var BorderWrap = /*#__PURE__*/function (_React$Component3) {
   _inherits(BorderWrap, _React$Component3);
   var _super3 = _createSuper(BorderWrap);
@@ -88,7 +90,7 @@ var BorderWrap = /*#__PURE__*/function (_React$Component3) {
     }
   }]);
   return BorderWrap;
-}(React.Component);
+}(React.Component); //issue row comp
 var IssueRow = /*#__PURE__*/function (_React$Component4) {
   _inherits(IssueRow, _React$Component4);
   var _super4 = _createSuper(IssueRow);
@@ -104,7 +106,7 @@ var IssueRow = /*#__PURE__*/function (_React$Component4) {
     }
   }]);
   return IssueRow;
-}(React.Component);
+}(React.Component); //issue add comp
 var IssueAdd = /*#__PURE__*/function (_React$Component5) {
   _inherits(IssueAdd, _React$Component5);
   var _super5 = _createSuper(IssueAdd);
@@ -119,7 +121,7 @@ var IssueAdd = /*#__PURE__*/function (_React$Component5) {
     }
   }]);
   return IssueAdd;
-}(React.Component);
+}(React.Component); //issue list comp
 var IssueList = /*#__PURE__*/function (_React$Component6) {
   _inherits(IssueList, _React$Component6);
   var _super6 = _createSuper(IssueList);

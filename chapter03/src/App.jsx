@@ -12,7 +12,7 @@ const issues = [
 ];
 
 
-
+//issue filter comp
 class IssueFilter extends React.Component {
     render() {
         return (
@@ -21,6 +21,7 @@ class IssueFilter extends React.Component {
     }
 }
 
+//issue table comp
 class IssueTable extends React.Component {
     render() {
         const issueRows = issues.map(issue =>
@@ -47,7 +48,7 @@ class IssueTable extends React.Component {
     }
 }
 
-
+//border wrap cpmponent
 class BorderWrap extends React.Component {
     render() {
         const borderedStyle = { border: "1px solid silver", padding: 6 };
@@ -59,6 +60,7 @@ class BorderWrap extends React.Component {
     }
 }
 
+//issue row comp
 class IssueRow extends React.Component {
     render() {
         const issue = this.props.issue;
@@ -76,6 +78,7 @@ class IssueRow extends React.Component {
     }
 }
 
+//issue add comp
 class IssueAdd extends React.Component {
     render() {
         return (
@@ -84,6 +87,7 @@ class IssueAdd extends React.Component {
     }
 }
 
+//issue list comp
 class IssueList extends React.Component {
     render() {
         return (
