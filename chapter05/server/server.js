@@ -18,22 +18,26 @@ const issuesDB = [
     },
 ];
 
+//custom scaler resolver for GraphQL date
 const GraphQLDate = new GraphQLScalarType({
     name: 'GraphQLDate',
     description: 'A Date() type in GraphQL as a scalar',
+    //returns a string value
     serialize(value) {
         return value.toISOString();
     },
 
+    //called when input is parsed as a variiable
     parseValue(value) {
         const dateValue = new Date(value);
-        //validation
+         //validation
         return isNaN(dateValue) ? undefined : dateValue;
     },
+    
     parseLiteral(ast) {
-        //validation
         if (ast.kind == Kind.STRING) {
             const value = new Date(ast.value);
+            //validation
             return isNaN(value) ? undefined : value;
         }
     },
@@ -53,25 +57,8 @@ const resolvers = {
 };
 
 
-function issueAdd(_, { issue }) {
-    issueValidate(issue);
-    issue.created = new Date();
-    issue.id = issuesDB.length + 1;
-    if (issue.status == undefined) issue.status = 'New';
-    issuesDB.push(issue);
-    return issue;
-}
-
-function setAboutMessage(_, { message }) {
-    return aboutMessage = message;
-};
-
-function issueList() {
-    return issuesDB;
-};
-
 //validation errors
-function validateIssue(_, { issue }) {
+function issueValidate(_, { issue }) {
     const errors = [];
     if (issue.title.length < 3) {
         errors.push('Field "title" must be at least 3 characters long.')
@@ -84,6 +71,27 @@ function validateIssue(_, { issue }) {
     }
 }
 
+// issue add function 
+//validate issue before adding it to issueDB
+function issueAdd(_, { issue }) {
+    issueValidate(_, {issue});
+    issue.created = new Date();
+    issue.id = issuesDB.length + 1;
+    if (issue.status == undefined) issue.status = 'New';
+    issuesDB.push(issue);
+    return issue;
+}
+
+function setAboutMessage(_, { message }) {
+    return aboutMessage = message;
+};
+
+//function returning issuedb array
+function issueList() {
+    return issuesDB;
+};
+
+//graphQL server
 const server = new ApolloServer({
     typeDefs: fs.readFileSync('./server/schema.graphql', 'utf-8'),
     resolvers,
@@ -96,6 +104,7 @@ const server = new ApolloServer({
 const app = express();
 app.use(express.static('public'));
 
+//appollo server middleware path 
 server.applyMiddleware({ app, path: '/graphql' });
 
 app.listen(3000, function () {
