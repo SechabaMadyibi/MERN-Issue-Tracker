@@ -22,7 +22,7 @@ function jsonDateReviver(key, value) {
   return value;
 }
 
-//displayin errors
+//displaying errors
 function graphQLFetch(_x) {
   return _graphQLFetch.apply(this, arguments);
 } //issue filter comp
@@ -57,11 +57,9 @@ function _graphQLFetch() {
           return response.text();
         case 7:
           body = _context3.sent;
-          //A reviver function is one that is called for parsing all values, and the JSON parser gives it a chance to modify what the
-          // default parser would do.
           result = JSON.parse(body, jsonDateReviver);
           if (result.errors) {
-            error = result.errors[0]; // For BAD_USER_INPUT, we’ll need to join all the validation errors 
+            error = result.errors[0];
             if (error.extensions.code == 'BAD_USER_INPUT') {
               details = error.extensions.exception.errors.join('\n ');
               alert("".concat(error.message, ":\n ").concat(details));
