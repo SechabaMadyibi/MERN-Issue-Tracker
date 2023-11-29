@@ -27,7 +27,7 @@ const GraphQLDate = new GraphQLScalarType({
         return value.toISOString();
     },
 
-    //called when input is parsed as a variiable
+    //called when input is parsed as a variable
     parseValue(value) {
         const dateValue = new Date(value);
          //validation
@@ -43,7 +43,7 @@ const GraphQLDate = new GraphQLScalarType({
     },
 });
 
-
+//resolve a query to a field with real values
 const resolvers = {
     Query: {
         about: () => aboutMessage,
@@ -71,7 +71,7 @@ function issueValidate(_, { issue }) {
     }
 }
 
-// issue add function 
+// (resolver function)issue add 
 //validate issue before adding it to issueDB
 function issueAdd(_, { issue }) {
     issueValidate(_, {issue});
@@ -82,6 +82,7 @@ function issueAdd(_, { issue }) {
     return issue;
 }
 
+//resolver function 
 function setAboutMessage(_, { message }) {
     return aboutMessage = message;
 };
