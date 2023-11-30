@@ -1,22 +1,24 @@
-const { Kind } = require('graphql/language');
+
 const { GraphQLScalarType } = require('graphql');
 const fs = require('fs');
 const express = require('express');
 const { ApolloServer, UserInputError } = require('apollo-server-express');
+const { Kind } = require('graphql/language');
+const { MongoClient } = require('mongodb');
+
+const url = 'mongodb+srv://sechabamadyibi1:1234@cluster0.kus0e2y.mongodb.net/'
+let db;
+
+//connect to database
+async function connectToDb() {
+    const client = new MongoClient(url, { useNewUrlParser: true });
+    await client.connect();
+    console.log('Connected to MongoDB at', url);
+    db = client.db();
+}
+
 let aboutMessage = "Issue Tracker API v1.0";
 
-const issuesDB = [
-    {
-        id: 1, status: 'New', owner: 'Ravan', effort: 5,
-        created: new Date('2019-01-15'), due: undefined,
-        title: 'Error in console when clicking Add',
-    },
-    {
-        id: 2, status: 'Assigned', owner: 'Eddie', effort: 14,
-        created: new Date('2019-01-16'), due: new Date('2019-02-01'),
-        title: 'Missing bottom border on panel',
-    },
-];
 
 //custom scaler resolver for GraphQL date
 const GraphQLDate = new GraphQLScalarType({
@@ -30,10 +32,10 @@ const GraphQLDate = new GraphQLScalarType({
     //called when input is parsed as a variiable
     parseValue(value) {
         const dateValue = new Date(value);
-         //validation
+        //validation
         return isNaN(dateValue) ? undefined : dateValue;
     },
-    
+
     parseLiteral(ast) {
         if (ast.kind == Kind.STRING) {
             const value = new Date(ast.value);
@@ -71,15 +73,27 @@ function issueValidate(_, { issue }) {
     }
 }
 
+
+async function getNextSequence(name) {
+    const result = await db.collection('counters').findOneAndUpdate(
+        { _id: name },
+        { $inc: { current: 1 } },
+        { returnOriginal: false },
+    );
+    return result.value.current;
+}
+
 // issue add function 
-//validate issue before adding it to issueDB
-function issueAdd(_, { issue }) {
-    issueValidate(_, {issue});
+//validate issue before adding 
+async function issueAdd(_, { issue }) {
+    issueValidate(_, { issue });
     issue.created = new Date();
-    issue.id = issuesDB.length + 1;
+    issue.id = await getNextSequence('issues');
     if (issue.status == undefined) issue.status = 'New';
-    issuesDB.push(issue);
-    return issue;
+    const result = await db.collection('issues').insertOne(issue);
+    const savedIssue = await db.collection('issues')
+        .findOne({ _id: result.insertedId });
+    return savedIssue;
 }
 
 function setAboutMessage(_, { message }) {
@@ -87,8 +101,9 @@ function setAboutMessage(_, { message }) {
 };
 
 //function returning issuedb array
-function issueList() {
-    return issuesDB;
+async function issueList() {
+    const issues = await db.collection('issues').find({}).toArray();
+    return issues;
 };
 
 //graphQL server
@@ -107,6 +122,14 @@ app.use(express.static('public'));
 //appollo server middleware path 
 server.applyMiddleware({ app, path: '/graphql' });
 
-app.listen(3000, function () {
-    console.log('App started on port 3000');
-});
+//first connects to database then start the express apllication
+(async function () {
+    try {
+        await connectToDb();
+        app.listen(3000, function () {
+            console.log('App started on port 3000');
+        });
+    } catch (err) {
+        console.log('ERROR:', err);
+    }
+})();
