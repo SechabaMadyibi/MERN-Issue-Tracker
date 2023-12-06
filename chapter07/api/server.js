@@ -5,8 +5,17 @@ const express = require('express');
 const { ApolloServer, UserInputError } = require('apollo-server-express');
 const { Kind } = require('graphql/language');
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
+const proxy = require('http-proxy-middleware');
 
-const url = "mongodb+srv://sechabamadyibi1:1234@cluster0.kus0e2y.mongodb.net/issuetracker?retryWrites=true"
+const apiProxyTarget = process.env.API_PROXY_TARGET;
+if (apiProxyTarget) {
+ app.use('/graphql', proxy({ target: apiProxyTarget }));
+}
+
+
+const url =  process.env.DB_URL || "mongodb+srv://sechabamadyibi1:1234@cluster0.kus0e2y.mongodb.net/issuetracker?retryWrites=true"
+const port = process.env.API_SERVER_PORT || 3000;
 let db;
 
 let aboutMessage = "Issue Tracker API v1.0";
@@ -108,7 +117,7 @@ async function connectToDb() {
 
 //graphQL server
 const server = new ApolloServer({
-    typeDefs: fs.readFileSync('./server/schema.graphql', 'utf-8'),
+    typeDefs: fs.readFileSync('schema.graphql', 'utf-8'),
     resolvers,
     formatError: error => {
         console.log(error);
@@ -119,15 +128,17 @@ const server = new ApolloServer({
 const app = express();
 app.use(express.static('public'));
 
+const enableCors = (process.env.ENABLE_CORS || 'true') == 'true';
+console.log('CORS setting:', enableCors);
 //appollo server middleware path 
-server.applyMiddleware({ app, path: '/graphql' });
+server.applyMiddleware({ app, path: '/graphql', cors: enableCors });
 
 //first connects to database then start the express apllication
 (async function () {
     try {
         await connectToDb();
-        app.listen(3000, function () {
-            console.log('App started on port 3000');
+        app.listen(port, function () {
+            console.log(`API server started on port ${port}`);
         });
     } catch (err) {
         console.log('ERROR:', err);

@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 // const url = 'mongodb://localhost/issuetracker';
 // const url = 'mongodb://0.0.0.0:27017/issuetracker';
-const url = 'mongodb+srv://sechabamadyibi1:1234@cluster0.kus0e2y.mongodb.net/'
+const url = process.env.DB_URL  ||'mongodb+srv://sechabamadyibi1:1234@cluster0.kus0e2y.mongodb.net/'
 
 // Atlas URL - replace UUU with user, PPP with password, XXX with hostname
 // const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
@@ -19,7 +19,7 @@ function testWithCallbacks(callback) {
             callback(err);
             return;
         }
-        console.log('Connected to MongoDB');
+        console.log('Connected to MongoDB URL', url);
         //a connection to the database can be obtained by calling the db method of the client object
         const db = client.db();
         const collection = db.collection('employees');
@@ -64,7 +64,7 @@ async function testWithAsync() {
     const client = new MongoClient(url, { useNewUrlParser: true });
     try {
         await client.connect();
-        console.log('Connected to MongoDB');
+        cconsole.log('Connected to MongoDB URL', url);
         const db = client.db();
         const collection = db.collection('employees');
         const employee = { id: 2, name: 'B. Async', age: 16 };
