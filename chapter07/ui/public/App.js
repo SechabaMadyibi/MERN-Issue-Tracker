@@ -16,6 +16,12 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+/* eslint "react/react-in-jsx-scope": "off" */
+/* globals React ReactDOM  PropTypes */
+/* eslint "react/jsx-no-undef": "off" */
+/* eslint "react/no-multi-comp": "off" */
+/* eslint "no-alert": "off" */
+
 var dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 function jsonDateReviver(key, value) {
   if (dateRegex.test(value)) return new Date(value);
@@ -26,6 +32,7 @@ function jsonDateReviver(key, value) {
 function graphQLFetch(_x) {
   return _graphQLFetch.apply(this, arguments);
 } //issue filter comp
+// eslint-disable-next-line react/prefer-stateless-function
 function _graphQLFetch() {
   _graphQLFetch = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(query) {
     var variables,
@@ -58,25 +65,33 @@ function _graphQLFetch() {
         case 7:
           body = _context3.sent;
           result = JSON.parse(body, jsonDateReviver);
-          if (result.errors) {
-            error = result.errors[0];
-            if (error.extensions.code == 'BAD_USER_INPUT') {
-              details = error.extensions.exception.errors.join('\n ');
-              alert("".concat(error.message, ":\n ").concat(details));
-            } else {
-              alert("".concat(error.extensions.code, ": ").concat(error.message));
-            }
+          if (!result.errors) {
+            _context3.next = 18;
+            break;
           }
+          error = result.errors[0];
+          if (!(error.extensions.code === 'BAD_USER_INPUT')) {
+            _context3.next = 16;
+            break;
+          }
+          details = error.extensions.exception.errors.join('\n ');
+          alert("".concat(error.message, ":\n ").concat(details));
+          _context3.next = 18;
+          break;
+        case 16:
+          alert("".concat(error.extensions.code, ": ").concat(error.message));
+          return _context3.abrupt("return", null);
+        case 18:
           return _context3.abrupt("return", result.data);
-        case 13:
-          _context3.prev = 13;
+        case 21:
+          _context3.prev = 21;
           _context3.t0 = _context3["catch"](1);
           alert("Error in sending data to server: ".concat(_context3.t0.message));
-        case 16:
+        case 24:
         case "end":
           return _context3.stop();
       }
-    }, _callee3, null, [[1, 13]]);
+    }, _callee3, null, [[1, 21]]);
   }));
   return _graphQLFetch.apply(this, arguments);
 }
@@ -95,8 +110,9 @@ var IssueFilter = /*#__PURE__*/function (_React$Component) {
   }]);
   return IssueFilter;
 }(React.Component); //issue table comp
-function IssueTable(props) {
-  var issueRows = props.issues.map(function (issue) {
+function IssueTable(_ref) {
+  var issues = _ref.issues;
+  var issueRows = issues.map(function (issue) {
     return /*#__PURE__*/React.createElement(IssueRow, {
       key: issue.id,
       issue: issue
@@ -129,8 +145,8 @@ var BorderWrap = /*#__PURE__*/function (_React$Component2) {
   }]);
   return BorderWrap;
 }(React.Component); //issue row comp
-function IssueRow(props) {
-  var issue = props.issue;
+function IssueRow(_ref2) {
+  var issue = _ref2.issue;
   return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.status), /*#__PURE__*/React.createElement("td", null, issue.owner), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()), /*#__PURE__*/React.createElement("td", null, issue.effort), /*#__PURE__*/React.createElement("td", null, issue.due ? issue.due.toDateString() : ' '), /*#__PURE__*/React.createElement("td", null, issue.title));
 }
 
@@ -155,9 +171,10 @@ var IssueAdd = /*#__PURE__*/function (_React$Component3) {
         title: form.title.value,
         due: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10)
       };
-      this.props.createIssue(issue);
+      var createIssue = this.props.createIssue;
+      createIssue(issue);
       form.owner.value = "";
-      form.title.value = "";
+      form.title.value = '';
     }
   }, {
     key: "render",
@@ -173,11 +190,18 @@ var IssueAdd = /*#__PURE__*/function (_React$Component3) {
         type: "text",
         name: "title",
         placeholder: "Title"
-      }), /*#__PURE__*/React.createElement("button", null, "Add"));
+      }), /*#__PURE__*/React.createElement("button", {
+        type: "submit"
+      }, "Add"));
     }
   }]);
   return IssueAdd;
-}(React.Component); //issue list comp
+}(React.Component);
+IssueAdd.propTypes = {
+  createIssue: PropTypes.func.isRequired
+};
+
+//issue list comp
 var IssueList = /*#__PURE__*/function (_React$Component4) {
   _inherits(IssueList, _React$Component4);
   var _super4 = _createSuper(IssueList);
@@ -258,8 +282,9 @@ var IssueList = /*#__PURE__*/function (_React$Component4) {
   }, {
     key: "render",
     value: function render() {
+      var issues = this.state.issues;
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Issue Tracker"), /*#__PURE__*/React.createElement(IssueFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
-        issues: this.state.issues
+        issues: issues
       }), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueAdd, {
         createIssue: this.createIssue
       }));
