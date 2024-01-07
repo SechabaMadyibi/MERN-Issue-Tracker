@@ -14,9 +14,9 @@ function testWithCallbacks(callback) {
     );
 
     //The connect() method is an asynchronous method and needs a callback to receive the result of the connection
-    client.connect(function (err, client) {
-        if (err) {
-            callback(err);
+        client.connect((connErr) => {
+        if (connErr) {
+            callback(connErr);
             return;
         }
         console.log('Connected to MongoDB');
@@ -26,10 +26,10 @@ function testWithCallbacks(callback) {
 
         const employee = { id: 1, name: 'A. Callback', age: 23 };
         //insert one document into employees collection
-        collection.insertOne(employee, function (err, result) {
-            if (err) {
+        collection.insertOne(employee, (insertErr,result) => {
+            if (insertErr) {
                 client.close();
-                callback(err);
+                callback(insertErr);
                 return;
             }
             // Within the callback, let’s print the new _id that was created
@@ -38,21 +38,21 @@ function testWithCallbacks(callback) {
             console.log('Result of insert:\n', result.insertedId);
 
             collection.find({ _id: result.insertedId })
-                .toArray(function (err, docs) {
-                    if (err) {
-                        client.close();
-                        callback(err);
-                        return;
+            .toArray((findErr, docs) => {
+                if (findErr) {
+                    client.close();
+                    callback(findErr);
+                    return;
                     }
                     //print inserted document
                     console.log('Result of find:\n', docs);
                     client.close();
-                    callback(err);
+                    callback();
                 });
         });
     });
 }
-testWithCallbacks(function (err) {
+testWithCallbacks( (err) => {
     if (err) {
         console.log(err);
     }

@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon -w server -e js,graphql -w . -w .env server/server.js",
+    "lint": "eslint .",
     "compile": "babel src --out-dir public",
     "watch": "babel src --out-dir public --watch --verbose",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,6 +28,6 @@
     "@babel/preset-react": "^7.23.3",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.29.0"
+    "eslint-plugin-import": "^2.29.1"
   }
 }
