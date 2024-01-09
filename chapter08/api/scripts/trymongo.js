@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 // const url = 'mongodb://localhost/issuetracker';
 // const url = 'mongodb://0.0.0.0:27017/issuetracker';
-const url = process.env.DB_URL ||'mongodb+srv://sechabamadyibi1:1234@cluster0.kus0e2y.mongodb.net/'
+const url = 'mongodb+srv://sechabamadyibi1:1234@cluster0.kus0e2y.mongodb.net/'
 
 // Atlas URL - replace UUU with user, PPP with password, XXX with hostname
 // const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
