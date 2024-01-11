@@ -1,8 +1,6 @@
 "use strict";
 
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-var _IssueList = _interopRequireDefault(require("./IssueList.jsx"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -14,28 +12,55 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); } /* globals React ReactDOM */ /* eslint "react/react-in-jsx-scope": "off" */ /* eslint "react/no-multi-comp": "off" */
-//border wrap cpmponent
-var BorderWrap = /*#__PURE__*/function (_React$Component) {
-  _inherits(BorderWrap, _React$Component);
-  var _super = _createSuper(BorderWrap);
-  function BorderWrap() {
-    _classCallCheck(this, BorderWrap);
-    return _super.apply(this, arguments);
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+/* globals React PropTypes */
+//issue add comp
+var IssueAdd = /*#__PURE__*/function (_React$Component) {
+  _inherits(IssueAdd, _React$Component);
+  var _super = _createSuper(IssueAdd);
+  function IssueAdd() {
+    var _this;
+    _classCallCheck(this, IssueAdd);
+    _this = _super.call(this);
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    return _this;
   }
-  _createClass(BorderWrap, [{
+  _createClass(IssueAdd, [{
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      e.preventDefault();
+      var form = document.forms.issueAdd;
+      var issue = {
+        owner: form.owner.value,
+        title: form.title.value,
+        due: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10)
+      };
+      var createIssue = this.props.createIssue;
+      createIssue(issue);
+      form.owner.value = "";
+      form.title.value = '';
+    }
+  }, {
     key: "render",
     value: function render() {
-      var borderedStyle = {
-        border: "1px solid silver",
-        padding: 6
-      };
-      return /*#__PURE__*/React.createElement("div", {
-        style: borderedStyle
-      }, this.props.children);
+      return /*#__PURE__*/React.createElement("form", {
+        name: "issueAdd",
+        onSubmit: this.handleSubmit
+      }, /*#__PURE__*/React.createElement("input", {
+        type: "text",
+        name: "owner",
+        placeholder: "Owner"
+      }), /*#__PURE__*/React.createElement("input", {
+        type: "text",
+        name: "title",
+        placeholder: "Title"
+      }), /*#__PURE__*/React.createElement("button", {
+        type: "submit"
+      }, "Add"));
     }
   }]);
-  return BorderWrap;
+  return IssueAdd;
 }(React.Component);
-var element = /*#__PURE__*/React.createElement(_IssueList.default, null);
-ReactDOM.render(element, document.getElementById('contents'));
+IssueAdd.propTypes = {
+  createIssue: PropTypes.func.isRequired
+};
