@@ -23,11 +23,3 @@ module.exports = {
         },
         devtool: 'source-map'  
 };
-
-// let’s save some time by excluding libraries from transformation: they will already be transformed
-// in the distributions that are provided. To do this, we need to exclude all files under node_modules in the
-// Babel loader.
-
-// enable the optimization splitChunks. This plugin does what we want out of the box, that is,
-// it separates everything under node_modules into a different bundle. All we need to do is to say that we need
-// "all" as the value to the property chunks
