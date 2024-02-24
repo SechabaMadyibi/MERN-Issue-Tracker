@@ -10,12 +10,14 @@ const resolvers = {
         about: about.getMessage,
         issueList: issue.list,
         issue: issue.get,
+        issueCounts: issue.counts,
     },
     Mutation: {
         setAboutMessage: about.setMessage,
         issueAdd: issue.add,
         issueUpdate: issue.update,
         issueDelete: issue.delete,
+        issueRestore: issue.restore,
     },
     GraphQLDate,
 };
