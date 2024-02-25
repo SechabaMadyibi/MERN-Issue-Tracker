@@ -10,12 +10,12 @@ async function get(_, { id }) {
 
    const PAGE_SIZE = 10;
 //function returning issuedb array
-//chapter 10- add parameters (effortmin & effortmax) 
+// add parameters (effortmin & effortmax) 
 async function list(_, { status, effortMin, effortMax, page, }) {
     const db = getDb();
     const filter = {};
  if (status) filter.status = status;
- // chapter 10- check if effortmin/max is  not undefined and if they are undefined enable $lgte and $gte.
+ //  check if effortmin/max is  not undefined and if they are undefined enable $lgte and $gte.
  //($lgte and $gte)this check if value is less than or equal/ greater than or equal.
  if (effortMin !== undefined || effortMax !== undefined) {
     filter.effort = {};
@@ -63,7 +63,7 @@ async function add(_, { issue }) {
     return savedIssue;
 }
 
-//chapter 10- update issue
+// update issue
 
 async function update(_, { id, changes }) {
     const db = getDb();
@@ -116,6 +116,7 @@ async function update(_, { id, changes }) {
     if (effortMin !== undefined) filter.effort.$gte = effortMin;
     if (effortMax !== undefined) filter.effort.$lte = effortMax;
     }
+    
     const results = await db.collection('issues').aggregate([
     { $match: filter },
     {
