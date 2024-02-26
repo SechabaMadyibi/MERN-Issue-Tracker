@@ -11,7 +11,7 @@ async function get(_, { id }) {
    const PAGE_SIZE = 10;
 //function returning issuedb array
 // add parameters (effortmin & effortmax) 
-async function list(_, { status, effortMin, effortMax, page, }) {
+async function list(_, { status, effortMin, effortMax,  search, page, }) {
     const db = getDb();
     const filter = {};
  if (status) filter.status = status;
@@ -22,6 +22,8 @@ async function list(_, { status, effortMin, effortMax, page, }) {
     if (effortMin !== undefined) filter.effort.$gte = effortMin;
     if (effortMax !== undefined) filter.effort.$lte = effortMax;
     }
+    //search using text on mongodb
+    if (search) filter.$text = { $search: search };
     //get 10 results for each page
     const cursor = db.collection('issues').find(filter)
     .sort({ id: 1 })
@@ -116,7 +118,7 @@ async function update(_, { id, changes }) {
     if (effortMin !== undefined) filter.effort.$gte = effortMin;
     if (effortMax !== undefined) filter.effort.$lte = effortMax;
     }
-    
+
     const results = await db.collection('issues').aggregate([
     { $match: filter },
     {

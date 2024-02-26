@@ -13,7 +13,7 @@ for (let i = 0; i < 100; i += 1) {
     const owner = owners[Math.floor(Math.random() * 5)];
     const status = statuses[Math.floor(Math.random() * 4)];
     const effort = Math.ceil(Math.random() * 20);
-    const title = 'Lorem ipsum dolor sit amet, ${i}';
+    const title = `Lorem ipsum dolor sit amet, ${i}`;
     const id = initialCount + i + 1;
     const issue = {
         id, title, created, due, owner, status, effort,
